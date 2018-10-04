@@ -1,28 +1,64 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
+import { withStyles } from '@material-ui/core/styles';
+import Typography from '@material-ui/core/Typography';
+import Button from '@material-ui/core/Button';
 import './App.css';
+import Menu from './Menu';
+import CardBoard from './components/cards/CardBoard';
+
+const styles = {
+  actions: {
+    margin: '1em',
+  }
+};
 
 class App extends Component {
+  constructor(props) {
+    super(props);
+
+    this.menuChooser = new Menu();
+    this.state = { 
+      menu: this.menuChooser.getMenu(),
+    };
+  }
+
+  onChange(changingMenuFunc) {
+    return () => {
+      const newMenu = changingMenuFunc(this.state.menu);
+      this.setState({ menu: newMenu });
+    };
+  }
+
   render() {
     return (
       <div className="App">
         <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
+          <img src="/images/logo/logo_transparent.png" className="App-logo" alt="logo" />
         </header>
+        <div>
+          <div className={this.props.classes.actions}>
+            <Button 
+              variant="contained" 
+              onClick={this.onChange(this.menuChooser.changeAll)}
+            >
+              Change All
+            </Button>
+          </div>
+          <CardBoard 
+            menu={this.state.menu}
+            onChangeMeat={this.onChange(this.menuChooser.changeMeat)}
+            onChangeCereals={this.onChange(this.menuChooser.changeCereals)}
+            onChangeVegetables={this.onChange(this.menuChooser.changeVegetables)}
+          />
+        </div>
+        <footer className="App-footer">
+          <Typography>
+            Images taken from <a href="freefoodphotos.com">freefoodphotos.com</a>. Their images are licensed under a Creative Commons Attribution 3.0 Unported License.
+          </Typography>
+        </footer>
       </div>
     );
   }
 }
 
-export default App;
+export default withStyles(styles)(App);
